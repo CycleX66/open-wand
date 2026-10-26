@@ -67,3 +67,16 @@ test('a long effect sends the start signal once, then every part', async () => {
   assert.equal(writes.length, 3); // two 0x68 frames covering all four LED groups
   assert.ok(writes.slice(1).every(w => w.startsWith('68')));
 });
+
+test('lost motion packets are detected and filled in', async () => {
+  globalThis.document ??= { addEventListener() {} };
+  const { Engine } = await import('../js/engine.js');
+  const packet = (seq, v) => ({ seq, samples: Array(19).fill([v, 0, 0, 0, 0, 1]) });
+  for (const [unit, seqs] of [['samples', [0, 19, 38, 76]], ['packets', [7, 8, 9, 11]]]) {
+    const e = new Engine({});
+    const lens = seqs.map((s, i) => e.fillGap(packet(s, i)).length);
+    assert.equal(e.seqUnit, unit);
+    assert.deepEqual(lens, [19, 19, 19, 38], unit); // one packet lost before the last, filled with 19 readings
+    assert.equal(e.motionStats.missing, 19);
+  }
+});

@@ -31,6 +31,7 @@ export class Engine {
     this.device = null; this.cmd = null; this.writes = Promise.resolve();
     this.manualDisconnect = false; this.training = null; this.calibration = null;
     this.lastMatch = 0; this.lastTrail = 0; this.wakeLock = null;
+    this.motionStats = { packets: 0, samples: 0, missing: 0, since: Date.now() };
     this.supported = !!(navigator.bluetooth && navigator.bluetooth.requestDevice);
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && this.state.connected) this.keepAwake(); });
   }
@@ -96,8 +97,19 @@ export class Engine {
     this.keepAwake();
     await this.play(P.successEffect());
     this.note('Connected. Welcome glow sent');
-    this.imuSeen = 0;
+    this.imuSeen = 0; this.lastImu = null; this.seqUnit = null;
+    this.motionStats = { packets: 0, samples: 0, missing: 0, since: Date.now() };
     setTimeout(() => this.note(this.imuSeen ? `Motion data arriving (${this.imuSeen} packets)` : 'No motion data from the wand yet'), 3000);
+    clearInterval(this.statsTimer);
+    this.statsTimer = setInterval(() => this.reportMotion(), 10000);
+  }
+
+  reportMotion() {
+    const m = this.motionStats, secs = (Date.now() - m.since) / 1000;
+    if (!this.state.connected || !m || secs < 1) return;
+    const real = m.samples - m.missing, lostPct = m.samples ? Math.round(100 * m.missing / m.samples) : 0;
+    this.note(`Motion: ${(m.packets / secs).toFixed(1)} packets/s, ${Math.round(real / secs)} readings/s, ${lostPct}% lost and filled in`);
+    this.motionStats = { packets: 0, samples: 0, missing: 0, since: Date.now() };
   }
 
   onDisconnected() {
@@ -165,7 +177,9 @@ export class Engine {
     if (ev.kind === 'keepalive') { this.send(P.KEEPALIVE_REPLY).catch(() => {}); return; } // unanswered, the wand drops the link
     if (ev.kind === 'imu') {
       this.imuSeen = (this.imuSeen || 0) + 1;
-      for (const s of ev.samples) {
+      const samples = this.fillGap(ev);
+      this.motionStats.samples += samples.length; this.motionStats.packets++;
+      for (const s of samples) {
         if (this.calibration) this.calibration.push(s.slice(3, 6));
         const g = this.tracker.feed(s);
         if (g) this.onGesture(g);
@@ -181,6 +195,25 @@ export class Engine {
     } else if (ev.kind === 'firmware') {
       this.state.firmware = ev.version;
     }
+  }
+
+  // Lost motion packets would shrink and bend traced shapes. Each packet's number counts either
+  // samples or packets (learned from the first clean pair); missing samples are filled by
+  // repeating the last real one so the shape keeps its size.
+  fillGap(ev) {
+    const prev = this.lastImu, count = ev.samples.length;
+    this.lastImu = { seq: ev.seq, count, last: ev.samples[count - 1] };
+    if (!prev) return ev.samples;
+    const delta = (ev.seq - prev.seq + 65536) % 65536;
+    if (!this.seqUnit) {
+      if (delta === prev.count && delta !== 1) this.seqUnit = 'samples';
+      else if (delta === 1) this.seqUnit = 'packets';
+      return ev.samples;
+    }
+    const missing = this.seqUnit === 'samples' ? delta - prev.count : (delta - 1) * prev.count;
+    if (missing <= 0 || missing > 2000) return ev.samples; // in order, or a restart of the count
+    this.motionStats.missing += missing;
+    return [...Array(missing).fill(prev.last), ...ev.samples];
   }
 
   async onGesture(g) {

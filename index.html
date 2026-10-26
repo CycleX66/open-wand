@@ -315,7 +315,7 @@ footer{text-align:center;font:12px var(--ui);color:#7d78a3;margin-top:30px}
 <div class="toast" id="toast" role="status"></div>
 
 <script type="module">
-import { Engine } from './js/engine.js?v=3';
+import { Engine } from './js/engine.js?v=4';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const store = {
   get(k, d) { try { const v = localStorage.getItem('ow.' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
