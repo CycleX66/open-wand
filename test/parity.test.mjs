@@ -55,3 +55,15 @@ test('calibration finds the tip axis', () => {
   assert.deepEqual(tipAxisFromStill(Array(100).fill([0.02, 0.98, 0.05])), [0, 1, 0]);
   assert.equal(tipAxisFromStill(Array(100).fill([0.6, 0, 0.7])), null);
 });
+
+test('a long effect sends the start signal once, then every part', async () => {
+  globalThis.document ??= { addEventListener() {} };
+  const { Engine } = await import('../js/engine.js');
+  const engine = new Engine({}), writes = [];
+  engine.cmd = { writeValueWithoutResponse: async b => { writes.push(Buffer.from(b).toString('hex')); } };
+  await engine.play(new P.Effect().allLeds('#0000ff', 300));
+  assert.equal(writes[0], '60');
+  assert.equal(writes.filter(w => w === '60').length, 1);
+  assert.equal(writes.length, 3); // two 0x68 frames covering all four LED groups
+  assert.ok(writes.slice(1).every(w => w.startsWith('68')));
+});

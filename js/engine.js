@@ -152,8 +152,10 @@ export class Engine {
     catch (e) { this.note(`Write failed: ${e.message}`); throw e; }
   }
 
+  // 0x60 flushes whatever the wand is playing, so it goes once per effect, never between its frames.
   async play(effect) {
-    for (const frame of effect.frames(20)) { await this.send(P.EFFECT_PREFIX); await this.send(frame); }
+    await this.send(P.EFFECT_PREFIX);
+    for (const frame of effect.frames(20)) await this.send(frame);
   }
 
   setBattery(level) { this.state.battery = level; this.emitStatus(); }
