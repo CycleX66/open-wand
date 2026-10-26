@@ -247,6 +247,11 @@ footer{text-align:center;font:12px var(--ui);color:#7d78a3;margin-top:30px}
     <div class="wand-buttons" id="padView"><i></i><i></i><i></i><i></i></div>
   </div>
   <div class="panel">
+    <h4>Connection details</h4>
+    <p>If something isn't working, tell Claude what this says.</p>
+    <pre class="mono" id="connLog" style="white-space:pre-wrap;margin:0;max-height:220px;overflow:auto">Nothing yet.</pre>
+  </div>
+  <div class="panel">
     <h4>Wand lights</h4>
     <div class="swatches" id="swatches"></div>
     <div class="btns"><button id="lightsOff">Lights off</button><button id="buzzBtn">Vibrate</button></div>
@@ -310,7 +315,7 @@ footer{text-align:center;font:12px var(--ui);color:#7d78a3;margin-top:30px}
 <div class="toast" id="toast" role="status"></div>
 
 <script type="module">
-import { Engine } from './js/engine.js';
+import { Engine } from './js/engine.js?v=2';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const store = {
   get(k, d) { try { const v = localStorage.getItem('ow.' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
@@ -591,6 +596,7 @@ function onEngineMessage(ev) {
   if (ev.type === 'status') setWandState(ev.state);
   else if (ev.type === 'spell') onSpell(ev);
   else if (ev.type === 'buttons') paintPads(ev.pressed);
+  else if (ev.type === 'log') { const el = $('#connLog'); el.textContent = ev.lines.join('\n'); el.scrollTop = el.scrollHeight; }
   else onWandMotion(ev);
 }
 async function refreshSmartHome() {
