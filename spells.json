@@ -1,0 +1,620 @@
+{
+ "categories": [
+  "Charms",
+  "Defence",
+  "Creatures",
+  "Transfiguration"
+ ],
+ "spells": [
+  {
+   "key": "lumos",
+   "name": "Lumos",
+   "category": "Charms",
+   "colour": "#7cc4ff",
+   "path": "M18 82 L50 14 L82 82",
+   "effect": "glow",
+   "level": 1,
+   "gesture": "gestures/lumos.png"
+  },
+  {
+   "key": "nox",
+   "name": "Nox",
+   "category": "Charms",
+   "colour": "#aab4cc",
+   "path": "M82 18 L50 50 L18 82",
+   "effect": "fade",
+   "level": 1,
+   "gesture": "gestures/nox.png"
+  },
+  {
+   "key": "alohomora",
+   "name": "Alohomora",
+   "category": "Charms",
+   "colour": "#f7b13c",
+   "path": "M50 50 m0 -6 a6 6 0 1 1 -6 6 a12 12 0 1 1 12 12 a20 20 0 1 1 -20 -20 a28 28 0 0 1 28 28",
+   "effect": "pulse",
+   "level": 1,
+   "gesture": "gestures/alohomora.png"
+  },
+  {
+   "key": "expelliarmus",
+   "name": "Expelliarmus",
+   "category": "Defence",
+   "colour": "#ff3b4e",
+   "path": "M20 22 L80 22 L20 78 L80 78",
+   "effect": "flash",
+   "level": 2,
+   "gesture": "gestures/expelliarmus.png"
+  },
+  {
+   "key": "incendio",
+   "name": "Incendio",
+   "category": "Charms",
+   "colour": "#ff7a1f",
+   "path": "M30 80 C20 55 45 50 40 20 C60 40 75 55 70 80",
+   "effect": "flicker",
+   "level": 2,
+   "gesture": "gestures/incendio.png"
+  },
+  {
+   "key": "wingardium_leviosa",
+   "name": "Wingardium Leviosa",
+   "category": "Charms",
+   "colour": "#b05cff",
+   "path": "M20 70 C20 20 80 20 80 50 C80 75 45 75 45 55 C45 42 62 42 62 52",
+   "effect": "rise",
+   "level": 2,
+   "gesture": "gestures/wingardium_leviosa.png"
+  },
+  {
+   "key": "revelio",
+   "name": "Revelio",
+   "category": "Charms",
+   "colour": "#4ea8ff",
+   "path": "M50 15 L50 85 M30 30 C15 50 25 70 40 78 M70 30 C85 50 75 70 60 78",
+   "effect": "sweep",
+   "level": 2,
+   "gesture": "gestures/revelio.png"
+  },
+  {
+   "key": "accio",
+   "name": "Accio",
+   "category": "Charms",
+   "colour": "#f2a93b",
+   "path": "M70 30 C70 10 30 10 30 35 C30 60 70 55 62 40 C55 30 40 40 48 50 L30 85",
+   "effect": "pull",
+   "level": 2,
+   "gesture": "gestures/accio.png"
+  },
+  {
+   "key": "descendo",
+   "name": "Descendo",
+   "category": "Transfiguration",
+   "colour": "#54d36a",
+   "path": "M40 15 L40 50 L60 45 L55 85",
+   "effect": "drop",
+   "level": 3,
+   "unconfirmedShape": true
+  },
+  {
+   "key": "ascendio",
+   "name": "Ascendio",
+   "category": "Transfiguration",
+   "colour": "#7be05a",
+   "path": "M50 85 L50 15 M35 30 L50 15 L65 30 M50 60 C65 60 70 75 60 82",
+   "effect": "rise",
+   "level": 3,
+   "gesture": "gestures/ascendio.png"
+  },
+  {
+   "key": "aberto",
+   "name": "Aberto",
+   "category": "Transfiguration",
+   "colour": "#42aaff",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/aberto.png"
+  },
+  {
+   "key": "aguamenti",
+   "name": "Aguamenti",
+   "category": "Charms",
+   "colour": "#3fd0ff",
+   "path": "M20 30 C35 15 50 45 65 30 C75 20 85 30 80 45 L50 85",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/aguamenti.png"
+  },
+  {
+   "key": "anteoculatia",
+   "name": "Anteoculatia",
+   "category": "Creatures",
+   "colour": "#ff7a1f",
+   "effect": "flash",
+   "level": 3,
+   "gesture": "gestures/anteoculatia.png"
+  },
+  {
+   "key": "appare_vestigium",
+   "name": "Appare Vestigium",
+   "category": "Charms",
+   "colour": "#54d36a",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/appare_vestigium.png"
+  },
+  {
+   "key": "arania_exumai",
+   "name": "Arania Exumai",
+   "category": "Creatures",
+   "colour": "#ff3b4e",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/arania_exumai.png"
+  },
+  {
+   "key": "bombarda",
+   "name": "Bombarda",
+   "category": "Defence",
+   "colour": "#ff9be2",
+   "effect": "glow",
+   "level": 4,
+   "gesture": "gestures/bombarda.png"
+  },
+  {
+   "key": "brachiabindo",
+   "name": "Brachiabindo",
+   "category": "Defence",
+   "colour": "#42aaff",
+   "effect": "rise",
+   "level": 2,
+   "gesture": "gestures/brachiabindo.png"
+  },
+  {
+   "key": "calvorio",
+   "name": "Calvorio",
+   "category": "Defence",
+   "colour": "#b05cff",
+   "effect": "flash",
+   "level": 3,
+   "gesture": "gestures/calvorio.png"
+  },
+  {
+   "key": "cantis",
+   "name": "Cantis",
+   "category": "Charms",
+   "colour": "#f6c75c",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/cantis.png"
+  },
+  {
+   "key": "colloportus",
+   "name": "Colloportus",
+   "category": "Transfiguration",
+   "colour": "#44dfcb",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/colloportus.png"
+  },
+  {
+   "key": "colloshoo",
+   "name": "Colloshoo",
+   "category": "Creatures",
+   "colour": "#ff7a1f",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/colloshoo.png"
+  },
+  {
+   "key": "colovaria",
+   "name": "Colovaria",
+   "category": "Transfiguration",
+   "colour": "#54d36a",
+   "effect": "glow",
+   "level": 4,
+   "gesture": "gestures/colovaria.png"
+  },
+  {
+   "key": "confringo",
+   "name": "Confringo",
+   "category": "Defence",
+   "colour": "#ff5a2a",
+   "path": "M50 85 L50 40 L25 15 M50 40 L75 15",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/confringo.png"
+  },
+  {
+   "key": "confundo",
+   "name": "Confundo",
+   "category": "Charms",
+   "colour": "#7cc4ff",
+   "effect": "flash",
+   "level": 3,
+   "gesture": "gestures/confundo.png"
+  },
+  {
+   "key": "densaugeo",
+   "name": "Densaugeo",
+   "category": "Defence",
+   "colour": "#ff9be2",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/densaugeo.png"
+  },
+  {
+   "key": "entomorphis",
+   "name": "Entomorphis",
+   "category": "Defence",
+   "colour": "#42aaff",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/entomorphis.png"
+  },
+  {
+   "key": "evanesco",
+   "name": "Evanesco",
+   "category": "Transfiguration",
+   "colour": "#d2b6ff",
+   "path": "M50 20 C80 20 80 50 50 50 C20 50 20 80 50 80",
+   "effect": "fade",
+   "level": 4,
+   "gesture": "gestures/evanesco.png"
+  },
+  {
+   "key": "expecto_patronum",
+   "name": "Expecto Patronum",
+   "category": "Creatures",
+   "colour": "#bfe9ff",
+   "path": "M50 85 L50 50 C50 25 80 25 80 45 C80 65 50 60 50 50 C50 30 20 30 20 50",
+   "effect": "glow",
+   "level": 5,
+   "gesture": "gestures/expecto_patronum.png"
+  },
+  {
+   "key": "expulso",
+   "name": "Expulso",
+   "category": "Defence",
+   "colour": "#ff7a1f",
+   "effect": "flash",
+   "level": 3,
+   "gesture": "gestures/expulso.png"
+  },
+  {
+   "key": "finestra",
+   "name": "Finestra",
+   "category": "Transfiguration",
+   "colour": "#54d36a",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/finestra.png"
+  },
+  {
+   "key": "finite",
+   "name": "Finite",
+   "category": "Defence",
+   "colour": "#ff3b4e",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/finite.png"
+  },
+  {
+   "key": "flagrate",
+   "name": "Flagrate",
+   "category": "Charms",
+   "colour": "#7cc4ff",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/flagrate.png"
+  },
+  {
+   "key": "flipendo",
+   "name": "Flipendo",
+   "category": "Defence",
+   "colour": "#ffb347",
+   "path": "M20 50 C20 20 80 20 80 50 L60 40 M80 50 L90 30",
+   "effect": "flash",
+   "level": 3,
+   "gesture": "gestures/flipendo.png"
+  },
+  {
+   "key": "fulgari",
+   "name": "Fulgari",
+   "category": "Charms",
+   "colour": "#42aaff",
+   "effect": "rise",
+   "level": 2,
+   "gesture": "gestures/fulgari.png"
+  },
+  {
+   "key": "glacius",
+   "name": "Glacius",
+   "category": "Charms",
+   "colour": "#b8f4ff",
+   "path": "M20 20 L80 80 M80 20 L20 80 M50 15 L50 85",
+   "effect": "pulse",
+   "level": 4,
+   "gesture": "gestures/glacius.png"
+  },
+  {
+   "key": "herbivicus",
+   "name": "Herbivicus",
+   "category": "Creatures",
+   "colour": "#66e08a",
+   "path": "M50 85 C50 60 30 50 30 30 C40 40 50 40 50 15 C50 40 60 40 70 30 C70 50 50 60 50 85",
+   "effect": "rise",
+   "level": 4,
+   "gesture": "gestures/herbivicus.png"
+  },
+  {
+   "key": "immobulus",
+   "name": "Immobulus",
+   "category": "Creatures",
+   "colour": "#8ff0ff",
+   "path": "M20 80 L20 20 L80 20 L80 80",
+   "effect": "flash",
+   "level": 4,
+   "gesture": "gestures/immobulus.png"
+  },
+  {
+   "key": "impedimenta",
+   "name": "Impedimenta",
+   "category": "Defence",
+   "colour": "#ff7a1f",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/impedimenta.png"
+  },
+  {
+   "key": "incarcerous",
+   "name": "Incarcerous",
+   "category": "Defence",
+   "colour": "#54d36a",
+   "effect": "glow",
+   "level": 4,
+   "gesture": "gestures/incarcerous.png"
+  },
+  {
+   "key": "melefors",
+   "name": "Melefors",
+   "category": "Defence",
+   "colour": "#ff9be2",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/melefors.png"
+  },
+  {
+   "key": "meteolojinx",
+   "name": "Meteolojinx",
+   "category": "Charms",
+   "colour": "#42aaff",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/meteolojinx.png"
+  },
+  {
+   "key": "mucus_ad_nauseum",
+   "name": "Mucus Ad Nauseum",
+   "category": "Defence",
+   "colour": "#b05cff",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/mucus_ad_nauseum.png"
+  },
+  {
+   "key": "orchideous",
+   "name": "Orchideous",
+   "category": "Creatures",
+   "colour": "#44dfcb",
+   "effect": "rise",
+   "level": 2,
+   "gesture": "gestures/orchideous.png"
+  },
+  {
+   "key": "petrificus_totalus",
+   "name": "Petrificus Totalus",
+   "category": "Defence",
+   "colour": "#cfd8ff",
+   "path": "M20 50 L80 50 M50 20 L50 80",
+   "effect": "flash",
+   "level": 4,
+   "gesture": "gestures/petrificus_totalus.png"
+  },
+  {
+   "key": "piertotum_locomotor",
+   "name": "Piertotum Locomotor",
+   "category": "Transfiguration",
+   "colour": "#54d36a",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/piertotum_locomotor.png"
+  },
+  {
+   "key": "protego",
+   "name": "Protego",
+   "category": "Defence",
+   "colour": "#42aaff",
+   "path": "M50 15 L80 28 C80 60 65 75 50 85 C35 75 20 60 20 28 Z",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/protego.png"
+  },
+  {
+   "key": "quietus",
+   "name": "Quietus",
+   "category": "Charms",
+   "colour": "#7cc4ff",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/quietus.png"
+  },
+  {
+   "key": "reducto",
+   "name": "Reducto",
+   "category": "Defence",
+   "colour": "#ff9be2",
+   "effect": "glow",
+   "level": 4,
+   "gesture": "gestures/reducto.png"
+  },
+  {
+   "key": "reparo",
+   "name": "Reparo",
+   "category": "Transfiguration",
+   "colour": "#ffd76a",
+   "path": "M70 25 A30 30 0 1 0 75 65 L85 75",
+   "effect": "pulse",
+   "level": 3,
+   "gesture": "gestures/reparo.png"
+  },
+  {
+   "key": "rictusempra",
+   "name": "Rictusempra",
+   "category": "Defence",
+   "colour": "#f6c75c",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/rictusempra.png"
+  },
+  {
+   "key": "riddikulus",
+   "name": "Riddikulus",
+   "category": "Creatures",
+   "colour": "#ff9be2",
+   "path": "M15 60 C25 30 35 30 40 60 C45 85 55 85 60 60 C65 30 75 30 85 60",
+   "effect": "rainbow",
+   "level": 3,
+   "gesture": "gestures/riddikulus.png"
+  },
+  {
+   "key": "salvio_hexia",
+   "name": "Salvio Hexia",
+   "category": "Defence",
+   "colour": "#ff7a1f",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/salvio_hexia.png"
+  },
+  {
+   "key": "scourgify",
+   "name": "Scourgify",
+   "category": "Transfiguration",
+   "colour": "#54d36a",
+   "effect": "glow",
+   "level": 4,
+   "gesture": "gestures/scourgify.png"
+  },
+  {
+   "key": "serpensortia",
+   "name": "Serpensortia",
+   "category": "Creatures",
+   "colour": "#3ed66b",
+   "path": "M75 18 C40 10 25 35 50 48 C75 60 65 85 30 82",
+   "effect": "sweep",
+   "level": 3,
+   "unconfirmedShape": true
+  },
+  {
+   "key": "silencio",
+   "name": "Silencio",
+   "category": "Charms",
+   "colour": "#9a8cff",
+   "path": "M25 25 L75 75 M75 25 L25 75",
+   "effect": "fade",
+   "level": 3,
+   "gesture": "gestures/silencio.png"
+  },
+  {
+   "key": "stupefy",
+   "name": "Stupefy",
+   "category": "Defence",
+   "colour": "#ff4a6a",
+   "path": "M25 20 L50 80 L75 20",
+   "effect": "flash",
+   "level": 3,
+   "gesture": "gestures/stupefy.png"
+  },
+  {
+   "key": "the_cheering_charm",
+   "name": "The Cheering Charm",
+   "category": "Charms",
+   "colour": "#ff9be2",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/the_cheering_charm.png"
+  },
+  {
+   "key": "the_force_spell",
+   "name": "The Force Spell",
+   "category": "Defence",
+   "colour": "#42aaff",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/the_force_spell.png"
+  },
+  {
+   "key": "the_hair_thickening_growing_charm",
+   "name": "The Hair Thickening Growing Charm",
+   "category": "Transfiguration",
+   "colour": "#b05cff",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/the_hair_thickening_growing_charm.png"
+  },
+  {
+   "key": "the_hour_reversal_charm",
+   "name": "The Hour Reversal Charm",
+   "category": "Transfiguration",
+   "colour": "#f6c75c",
+   "effect": "glow",
+   "level": 4,
+   "gesture": "gestures/the_hour_reversal_charm.png"
+  },
+  {
+   "key": "the_sleeping_charm",
+   "name": "The Sleeping Charm",
+   "category": "Charms",
+   "colour": "#44dfcb",
+   "effect": "rise",
+   "level": 2,
+   "gesture": "gestures/the_sleeping_charm.png"
+  },
+  {
+   "key": "the_stretching_jinx",
+   "name": "The Stretching Jinx",
+   "category": "Transfiguration",
+   "colour": "#ff7a1f",
+   "effect": "flash",
+   "level": 3,
+   "gesture": "gestures/the_stretching_jinx.png"
+  },
+  {
+   "key": "ventus",
+   "name": "Ventus",
+   "category": "Charms",
+   "colour": "#54d36a",
+   "effect": "flicker",
+   "level": 4,
+   "gesture": "gestures/ventus.png"
+  },
+  {
+   "key": "verdimillious",
+   "name": "Verdimillious",
+   "category": "Defence",
+   "colour": "#ff3b4e",
+   "effect": "pulse",
+   "level": 2,
+   "gesture": "gestures/verdimillious.png"
+  },
+  {
+   "key": "vermillious",
+   "name": "Vermillious",
+   "category": "Defence",
+   "colour": "#7cc4ff",
+   "effect": "sweep",
+   "level": 3,
+   "gesture": "gestures/vermillious.png"
+  }
+ ]
+}

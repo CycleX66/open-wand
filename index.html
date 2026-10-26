@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0a24">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+<title>Open Wand</title>
+<style>
+:root{
+  --bg:#0b0a24;--bg2:#15123a;--panel:#141235cc;--line:#3c3a78;--line-hi:#6d8cff;
+  --gold:#f0c870;--gold2:#c99a45;--text:#efe6d2;--muted:#a9a3c6;--blue:#5aa9ff;
+  --display:"Cinzel",Georgia,serif;--serif:"Cormorant Garamond",Georgia,serif;--ui:system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);font-size:18px;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+#sky{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 30% 10%,#2a2470 0%,transparent 55%),radial-gradient(ellipse at 80% 70%,#3a1d5e 0%,transparent 50%),linear-gradient(#0d0b2c,#07061a)}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.app{position:relative;z-index:1;max-width:1100px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 16px 40px}
+.screen{display:none;animation:in .35s ease}
+.screen.active{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.topbar{display:flex;align-items:center;gap:12px;min-height:64px}
+.topbar h2{flex:1;margin:0;font:600 26px var(--serif);color:var(--gold);text-align:center}
+.icon-btn{width:44px;height:44px;border:0;background:none;color:var(--gold);display:grid;place-items:center;cursor:pointer;border-radius:50%}
+.icon-btn:hover{background:#ffffff10}
+.icon-btn svg{width:26px;height:26px}
+.spacer{width:44px}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* Main menu */
+.brand{text-align:center;padding:28px 0 6px}
+.brand .eyebrow{font:500 15px var(--display);letter-spacing:.35em;color:var(--gold2)}
+.brand h1{margin:6px 0 0;font:700 clamp(38px,9vw,64px)/1.05 var(--display);letter-spacing:.04em;color:var(--gold);text-shadow:0 0 24px #f0c87055}
+.brand h1 small{display:flex;align-items:center;justify-content:center;gap:14px;font-size:.62em}
+.brand h1 small:before,.brand h1 small:after{content:"";height:1px;width:48px;background:linear-gradient(90deg,transparent,var(--gold))}
+.brand h1 small:after{transform:scaleX(-1)}
+.wand-art{display:block;margin:12px auto 0;width:min(360px,80%)}
+.castle{display:block;width:100%;max-width:560px;margin:0 auto -6px}
+.menu{display:grid;gap:12px;max-width:340px;margin:0 auto}
+.menu button{height:50px;border:1px solid #6b6aa5;border-radius:6px;background:#0e0c2acc;color:var(--text);font:500 15px var(--display);letter-spacing:.14em;cursor:pointer;transition:.2s}
+.menu button:hover{border-color:var(--gold);color:var(--gold)}
+.menu button.primary{border-color:#9cc4ff;color:#fff;font-size:18px;box-shadow:0 0 18px #4c8cff88,inset 0 0 14px #4c8cff55;background:linear-gradient(#1b2560,#0e0f35)}
+.status-pill{display:inline-flex;align-items:center;gap:8px;margin:14px auto 0;font:13px var(--ui);color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 12px;background:#0b0a24aa}
+.dot{width:8px;height:8px;border-radius:50%;background:#777}
+.dot.on{background:#5ee08a;box-shadow:0 0 8px #5ee08a}
+.center{text-align:center}
+
+/* Spellbook */
+.tabs{display:flex;border:1px solid var(--line);border-radius:6px;overflow-x:auto;background:#0d0b2b99;scrollbar-width:none}
+.tabs button{flex:1;min-width:92px;padding:12px 6px 10px;background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font:500 11px var(--display);letter-spacing:.1em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}
+.tabs button svg{width:24px;height:24px}
+.tabs button.active{color:#fff;border-bottom-color:var(--blue);background:linear-gradient(transparent,#3f6dff22)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:14px}
+.card{position:relative;aspect-ratio:1/1.05;border:1px solid #2f2d63;border-radius:6px;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--c) 22%,transparent),#0f0d2e 70%);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px;color:var(--text);transition:.2s;overflow:hidden}
+.card:hover{border-color:var(--c);transform:translateY(-2px)}
+.card.selected{border-color:#9cc4ff;box-shadow:0 0 0 1px #9cc4ff,0 0 20px #4c8cff66}
+.card svg{position:absolute;inset:8% 12% 26%;width:76%;height:66%}
+.card img{position:absolute;inset:6% 12% 26%;width:76%;height:68%;object-fit:contain;filter:drop-shadow(0 0 3px var(--c)) drop-shadow(0 0 9px var(--c))}
+.gesture{display:block;height:min(46vh,400px);max-width:90%;margin:8px auto 0;object-fit:contain;filter:drop-shadow(0 0 5px var(--c)) drop-shadow(0 0 16px var(--c))}
+.stage{--live-top:70px}
+.live{position:absolute;left:50%;top:var(--live-top);width:min(46vh,400px);height:min(46vh,400px);transform:translateX(-50%);pointer-events:none;overflow:visible}
+.live polyline{fill:none;stroke:#ffe08a;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px #ffd36a)}
+.live circle{fill:#fff}
+.train-box{position:relative;height:min(46vh,400px);margin-top:8px}
+.train-box .gesture{position:absolute;inset:0;margin:auto;height:100%;opacity:.35}
+.train-box .live{top:0}
+.badge{position:absolute;top:6px;left:8px;font:600 11px var(--ui);color:#0b0a24;background:var(--gold);border-radius:99px;padding:2px 7px}
+.card span{position:relative;font:600 16px/1.1 var(--serif);text-align:center}
+.card.locked{background:#0e0d27;cursor:default}
+.card.locked svg{opacity:.5}
+.card .count{position:absolute;top:6px;right:8px;font:12px var(--ui);color:var(--muted)}
+
+/* Casting */
+.stage{position:relative;border:1px solid #2f2d63;border-radius:14px;background:radial-gradient(ellipse at 50% 60%,#2a1f6a88,transparent 70%),#0c0a26cc;padding:18px 16px 22px;text-align:center;overflow:hidden}
+.stage p.lead{margin:4px auto 0;max-width:420px;font-size:21px}
+.trace{display:block;width:min(420px,90%);margin:6px auto 0;overflow:visible}
+.meter{width:min(240px,70%);height:16px;margin:8px auto 0;border-radius:99px;background:linear-gradient(90deg,#f2b84a,#e7642c 55%,#d83b3b);position:relative;box-shadow:0 0 12px #f2b84a55}
+.meter i{position:absolute;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:#111;border:2px solid #f6e3b0;left:var(--v,50%);transition:left .3s}
+.casts{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;font-size:18px}
+.check{width:24px;height:24px;border:1.5px solid var(--gold);border-radius:50%;display:inline-grid;place-items:center;color:var(--gold);font:14px var(--ui)}
+.hint{font:14px/1.5 var(--ui);color:var(--muted);margin:14px auto 0;max-width:460px}
+.ghost{margin-top:14px;padding:10px 18px;border:1px solid #6b6aa5;border-radius:6px;background:#0e0c2acc;color:var(--text);font:500 13px var(--display);letter-spacing:.12em;cursor:pointer}
+.ghost:hover{border-color:var(--gold);color:var(--gold)}
+.timer{display:flex;justify-content:center;align-items:center;gap:8px;font:600 26px var(--serif);margin-top:12px}
+
+/* Success */
+.success h3{font:600 34px var(--serif);color:var(--gold);margin:10px 0 6px;text-shadow:0 0 18px #f0c87066}
+.big-check{width:72px;height:72px;margin:0 auto;border:2px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold);box-shadow:0 0 22px #f0c87055}
+.burst{width:min(320px,80%);display:block;margin:0 auto}
+.actions-log{font:14px var(--ui);color:var(--muted);margin-top:10px}
+
+/* Houses */
+.houses{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:420px;margin:24px auto}
+.house{background:none;border:1px solid transparent;border-radius:12px;padding:12px 6px;color:var(--text);cursor:pointer;font:600 19px var(--serif);display:flex;flex-direction:column;align-items:center;gap:8px}
+.house:hover,.house.chosen{border-color:var(--gold);background:#ffffff08}
+.house svg{width:92px;height:108px;filter:drop-shadow(0 0 10px #0008)}
+
+/* Settings */
+.list{border:1px solid var(--line);border-radius:6px;background:#0f0d2ecc;max-width:640px;margin:8px auto 0}
+.row{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid var(--line);font-size:20px;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;color:var(--text);text-align:left}
+.row:last-child{border-bottom:0}
+.row svg{width:24px;height:24px;flex:none;color:var(--text)}
+.row .label{flex:1}
+.row .val{font:14px var(--ui);color:var(--muted)}
+.toggle{width:46px;height:26px;border-radius:99px;background:#333056;position:relative;flex:none;transition:.2s}
+.toggle:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#ccc;transition:.2s}
+.toggle.on{background:#3f6dff}.toggle.on:after{left:23px;background:#fff}
+.panel{border:1px solid var(--line);border-radius:10px;background:#0f0d2ecc;max-width:640px;margin:14px auto 0;padding:18px;font:15px/1.5 var(--ui)}
+.panel h4{margin:0 0 10px;font:600 20px var(--serif);color:var(--gold)}
+.panel label{display:block;font-size:13px;color:var(--muted);margin-top:10px}
+.panel input[type=text],.panel input[type=password],.panel input[type=url]{width:100%;margin-top:4px;padding:11px;border-radius:6px;border:1px solid #4b4a85;background:#090820;color:#fff;font:15px var(--ui)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btns button{padding:10px 14px;border-radius:6px;border:1px solid #6b6aa5;background:#18164a;color:var(--text);font:600 13px var(--ui);cursor:pointer}
+.btns button:hover{border-color:var(--gold)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.swatches button{width:36px;height:36px;border-radius:50%;border:2px solid #fff3;cursor:pointer;background:var(--c);box-shadow:0 0 10px var(--c)}
+.mono{font-family:ui-monospace,monospace;font-size:13px;color:var(--muted)}
+.wand-buttons{display:flex;gap:8px;margin-top:8px}
+.wand-buttons i{flex:1;height:10px;border-radius:99px;background:#2b2958}
+.wand-buttons i.on{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:5;background:#17154aee;border:1px solid var(--gold2);color:var(--text);padding:12px 18px;border-radius:10px;font:15px var(--ui);transition:.3s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%)}
+footer{text-align:center;font:12px var(--ui);color:#7d78a3;margin-top:30px}
+@media (min-width:860px){.grid{grid-template-columns:repeat(5,1fr)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="sky"></div><canvas id="stars"></canvas>
+<div class="app">
+
+<!-- MAIN MENU -->
+<section class="screen active" id="home">
+  <div class="topbar"><button class="icon-btn" data-go="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span style="flex:1"></span><span class="spacer"></span></div>
+  <div class="brand">
+    <div class="eyebrow">OPEN WAND</div>
+    <h1>MAGIC CASTER<small>WAND</small></h1>
+    <svg class="wand-art" viewBox="0 0 360 30" aria-hidden="true"><defs><linearGradient id="wg" x1="0" x2="1"><stop offset="0" stop-color="#3a2416"/><stop offset=".25" stop-color="#7a5232"/><stop offset=".7" stop-color="#4a2e1b"/><stop offset="1" stop-color="#2a1a10"/></linearGradient><radialGradient id="tipg"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#9fd0ff"/><stop offset="1" stop-color="#5aa9ff" stop-opacity="0"/></radialGradient></defs><path d="M10 16 L300 13 L300 17 L10 18Z" fill="url(#wg)"/><rect x="10" y="12" width="70" height="9" rx="4" fill="#5b3a22"/><circle cx="34" cy="16" r="5" fill="none" stroke="#c99a45" stroke-width="1.2"/><circle cx="318" cy="15" r="18" fill="url(#tipg)"/></svg>
+  </div>
+  <svg class="castle" viewBox="0 0 560 220" aria-hidden="true"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1840"/><stop offset="1" stop-color="#07061a"/></linearGradient><linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2a6a"/><stop offset="1" stop-color="#0b0a24"/></linearGradient></defs>
+    <path fill="url(#cg)" d="M0 170 L40 150 L60 160 L90 140 L110 150 L120 100 L126 70 L132 100 L140 150 L170 150 L176 90 L184 40 L192 90 L198 150 L220 150 L222 110 L240 110 L244 70 L252 20 L260 70 L264 110 L282 110 L284 150 L300 150 L304 96 L312 60 L320 96 L324 150 L350 150 L356 112 L362 84 L368 112 L372 150 L400 145 L420 120 L428 104 L436 120 L444 150 L480 150 L510 160 L560 150 L560 175 L0 175Z"/>
+    <g fill="#ffcf7a"><rect x="182" y="96" width="4" height="7" rx="2"/><rect x="250" y="80" width="4" height="7" rx="2"/><rect x="250" y="120" width="4" height="6" rx="2"/><rect x="310" y="104" width="4" height="7" rx="2"/><rect x="232" y="128" width="3" height="5"/><rect x="270" y="132" width="3" height="5"/><rect x="360" y="120" width="3" height="6"/><rect x="128" y="112" width="3" height="6"/><rect x="430" y="128" width="3" height="5"/><rect x="292" y="136" width="3" height="5"/><rect x="206" y="134" width="3" height="5"/></g>
+    <rect y="174" width="560" height="46" fill="url(#water)"/>
+    <g stroke="#ffcf7a" stroke-opacity=".35" stroke-width="2"><path d="M180 186h10M248 190h12M308 184h8M356 192h10M126 194h8M228 200h8"/></g>
+  </svg>
+  <nav class="menu">
+    <button class="primary" data-go="spellbook" data-mode="practice">PLAY</button>
+    <button data-go="collection">COLLECTION</button>
+    <button data-go="challenge-start">CHALLENGES</button>
+    <button data-go="settings">SETTINGS</button>
+  </nav>
+  <div class="center"><span class="status-pill"><span class="dot" id="homeDot"></span><span id="homeStatus">Wand not connected</span></span></div>
+  <footer>Open Wand · independent fan project · not affiliated with Warner Bros. or WB Games</footer>
+</section>
+
+<!-- HOUSE SELECTION -->
+<section class="screen" id="house">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Choose your House</h2><span class="spacer"></span></div>
+  <div class="houses" id="houses"></div>
+</section>
+
+<!-- SPELLBOOK -->
+<section class="screen" id="spellbook">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Spellbook</h2><span class="spacer"></span></div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="grid" id="spellGrid"></div>
+</section>
+
+<!-- COLLECTION -->
+<section class="screen" id="collection">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Your Collection<br><small id="collCount" style="font-size:16px;color:var(--text)"></small></h2><span class="spacer"></span></div>
+  <div class="grid" id="collGrid"></div>
+</section>
+
+<!-- CASTING -->
+<section class="screen" id="cast">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2 id="castTitle"></h2><button class="icon-btn" data-go="howto" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.5M12 17h.01"/></svg></button></div>
+  <div class="stage">
+    <p class="lead" id="castLead"></p>
+    <svg class="trace" id="trace" viewBox="-10 -10 120 120"></svg>
+    <img class="gesture" id="gestureImg" alt="Wand movement for this spell" hidden>
+    <svg class="live" id="castLive" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <div class="meter" id="meter"><i></i></div>
+    <div id="timer" class="timer" hidden><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></svg><span id="timerText">0:15</span></div>
+    <div class="casts"><span class="check">✓</span><span id="castCount">Spell Casts: 0</span></div>
+    <p class="hint" id="castHint"></p>
+    <button class="ghost" id="practiseBtn">CAST WITHOUT WAND</button>
+  </div>
+</section>
+
+<!-- SUCCESS -->
+<section class="screen" id="success">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2 id="successTitle"></h2><span class="spacer"></span></div>
+  <div class="stage success">
+    <svg class="burst" id="burst" viewBox="0 0 200 200"></svg>
+    <h3 id="successHead">Great Casting!</h3>
+    <div class="big-check"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <p class="actions-log" id="actionsLog"></p>
+    <div class="btns" style="justify-content:center"><button id="againBtn">Cast again</button><button data-go="spellbook">Spellbook</button></div>
+  </div>
+</section>
+
+<!-- CHALLENGE START -->
+<section class="screen" id="challenge-start">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Challenge</h2><span class="spacer"></span></div>
+  <div class="stage">
+    <p class="lead">Cast each spell before the timer runs out. Five spells per round.</p>
+    <p class="casts">Best score: <b id="bestScore">0</b></p>
+    <div class="menu" style="margin-top:18px"><button class="primary" id="startChallenge">START CHALLENGE</button></div>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="screen" id="settings">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Settings</h2><span class="spacer"></span></div>
+  <div class="list">
+    <button class="row" id="soundRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 9v6h4l5 4V5L8 9H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><span class="label">Sound</span><span class="toggle" id="soundToggle"></span></button>
+    <button class="row" id="vibeRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 9v6M21 9v6"/></svg><span class="label">Wand vibration</span><span class="toggle" id="vibeToggle"></span></button>
+    <button class="row" data-go="connect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20L16 8M15 3v3M19 7h3M18 4l2-2M13 6l5 5"/></svg><span class="label">Wand connection &amp; lights</span><span class="val" id="connVal">Not connected</span></button>
+    <button class="row" data-go="house"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span class="label">House</span><span class="val" id="houseVal">None</span></button>
+    <button class="row" data-go="train"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20L14 10M14 4v3M18 8h3M17 5l2-2M12 7l5 5"/><circle cx="6" cy="6" r="1.5"/></svg><span class="label">Train spells</span><span class="val" id="trainVal"></span></button>
+    <button class="row" data-go="smarthome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11l9-7 9 7M5 10v10h14V10M10 20v-5h4v5"/></svg><span class="label">Smart home</span></button>
+    <button class="row" data-go="howto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.5M12 17h.01"/></svg><span class="label">How to Play</span></button>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section class="screen" id="connect">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Your Wand</h2><span class="spacer"></span></div>
+  <div class="panel">
+    <h4>Connect</h4>
+    <p>Flick the wand to wake it, tap <b>Connect wand</b>, then choose your MCW wand from the list. After that it reconnects by itself while this page is open.</p>
+    <div class="btns"><button id="scanBtn">Connect wand</button><button id="disconnectBtn">Disconnect wand</button></div>
+    <p id="bridgeStatus" class="mono" aria-live="polite">Not connected</p>
+  </div>
+  <div class="panel">
+    <h4>Wand status</h4>
+    <p class="mono" id="wandInfo">No wand connected</p>
+    <label>Touch pads</label>
+    <div class="wand-buttons" id="padView"><i></i><i></i><i></i><i></i></div>
+  </div>
+  <div class="panel">
+    <h4>Wand lights</h4>
+    <div class="swatches" id="swatches"></div>
+    <div class="btns"><button id="lightsOff">Lights off</button><button id="buzzBtn">Vibrate</button></div>
+  </div>
+</section>
+
+<!-- TRAIN: LIST -->
+<section class="screen" id="train">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Train Spells</h2><span class="spacer"></span></div>
+  <div class="panel">
+    <h4>1. Calibrate (once)</h4>
+    <p>Point the wand's tip straight up at the ceiling, hold it completely still, then tap Calibrate. This tells Open Wand which way your wand's sensor faces.</p>
+    <div class="btns"><button id="calibrateBtn">Calibrate</button></div>
+    <p class="mono" id="calibStatus"></p>
+  </div>
+  <div class="panel">
+    <h4>2. Teach it your spells</h4>
+    <p>Pick a spell and cast it 3 or more times. Open Wand learns <i>your</i> version of each movement. Trained spells are recognised by Open Wand. Untrained ones still use the wand's own guess.</p>
+  </div>
+  <div class="grid" id="trainGrid"></div>
+</section>
+
+<!-- TRAIN: ONE SPELL -->
+<section class="screen" id="trainSpell">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2 id="trainTitle"></h2><span class="spacer"></span></div>
+  <div class="stage">
+    <p class="lead">Grip the handle, start at the dot and follow the arrows. Pause between casts.</p>
+    <div class="train-box"><img class="gesture" id="trainImg" alt=""><svg class="live" id="trainLive" viewBox="0 0 100 100" aria-hidden="true"></svg></div>
+    <div class="casts"><span class="check">✓</span><span id="trainCount">Recorded: 0</span></div>
+    <p class="hint" id="trainHint">Waiting for your first cast…</p>
+    <div class="btns" style="justify-content:center"><button data-back>Done</button><button id="trainClear">Clear recordings</button></div>
+  </div>
+</section>
+
+<!-- SMART HOME -->
+<section class="screen" id="smarthome">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Smart Home</h2><span class="spacer"></span></div>
+  <div class="panel">
+    <h4>Spell actions</h4>
+    <p>Spells can switch lights and other devices through Home Assistant, or call a web address (webhook). Addresses must start with <b>https://</b>, because the iPad blocks plain http from this page. For Home Assistant, use its remote https address and allow this page in its <span class="mono">cors_allowed_origins</span>.</p>
+    <div id="shList" class="mono">No spell actions configured yet.</div>
+    <label class="mono" for="shEdit">Settings (JSON)</label>
+    <textarea id="shEdit" rows="10" spellcheck="false" style="width:100%;margin-top:6px;background:#090820;color:#fff;border:1px solid #4b4a85;border-radius:6px;padding:10px;font:13px ui-monospace,monospace"></textarea>
+    <div class="btns"><button id="shReload">Save</button></div>
+  </div>
+</section>
+
+<!-- HOW TO -->
+<section class="screen" id="howto">
+  <div class="topbar"><button class="icon-btn" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button><h2>How to Play</h2><span class="spacer"></span></div>
+  <div class="panel">
+    <h4>Casting</h4>
+    <p>1. Wake the wand by giving it a flick. Connect it under Settings → Wand connection.<br>2. Hold the wand like a pen, squeeze the touch pads on the handle, and draw the spell shape in the air from the dot to the arrow.<br>3. Release the pads. The wand itself recognises the spell, lights up, and Open Wand records the cast.</p>
+    <p>The shapes shown here are guides. The wand's own built-in spell shapes are what count, so experiment if a spell won't trigger.</p>
+    <h4 style="margin-top:16px">No wand?</h4>
+    <p>Use "Cast without wand" on any spell to see the effect and trigger its smart-home actions.</p>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script type="module">
+import { Engine } from './js/engine.js';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('ow.' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('ow.' + k, JSON.stringify(v)); } catch {} }
+};
+let book = { categories: [], spells: [] }, byKey = {};
+let engine = null;
+let casts = store.get('casts', {}), settings = store.get('settings', { sound: true, vibe: true }), house = store.get('house', null);
+let current = null, history = ['home'], ws = null, wandState = { connected: false }, challenge = null, category = 'All';
+
+/* ── Stars ─────────────────────────────── */
+const cv = $('#stars'), cx = cv.getContext('2d'); let stars = [];
+function sizeStars() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+  stars = Array.from({ length: 160 }, () => ({ x: Math.random() * cv.width, y: Math.random() * cv.height, r: Math.random() * 1.3 + .2, p: Math.random() * 6 })); }
+function drawStars(t) { cx.clearRect(0, 0, cv.width, cv.height);
+  for (const s of stars) { cx.globalAlpha = .35 + .35 * Math.sin(t / 900 + s.p); cx.fillStyle = '#fff'; cx.beginPath(); cx.arc(s.x, s.y, s.r * devicePixelRatio, 0, 7); cx.fill(); }
+  requestAnimationFrame(drawStars); }
+addEventListener('resize', sizeStars); sizeStars(); requestAnimationFrame(drawStars);
+
+/* ── Navigation ────────────────────────── */
+function go(id, push = true) {
+  const prev = document.querySelector('.screen.active')?.id;
+  if (prev === 'trainSpell' && id !== 'trainSpell') api('/api/train/stop', 'POST').catch(() => {});
+  if (id === 'train') renderTrain();
+  if (id === 'collection') renderCollection();
+  if (id === 'settings') renderSettings();
+  if (id === 'challenge-start') $('#bestScore').textContent = store.get('best', 0);
+  if (id !== 'cast' && id !== 'success') stopChallenge();
+  $$('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+  if (push && history[history.length - 1] !== id) history.push(id);
+  scrollTo(0, 0);
+}
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]'); if (g) { go(g.dataset.go); return; }
+  if (e.target.closest('[data-back]')) { history.pop(); go(history[history.length - 1] || 'home', false); }
+});
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 3200); }
+
+/* ── Spell art ─────────────────────────── */
+let uid = 0;
+function glowDefs(id, colour) {
+  return `<defs><filter id="f${id}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="r${id}"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="${colour}"/><stop offset="1" stop-color="${colour}" stop-opacity="0"/></radialGradient></defs>`;
+}
+function iconSVG(s, locked) {
+  const id = ++uid;
+  if (locked) return `<svg viewBox="0 0 100 100"><rect x="38" y="46" width="24" height="20" rx="3" fill="none" stroke="#8a87b0" stroke-width="3"/><path d="M43 46v-6a7 7 0 0 1 14 0v6" fill="none" stroke="#8a87b0" stroke-width="3"/></svg>`;
+  if (s.gesture) return `<img src="${s.gesture}" alt="" loading="lazy">`;
+  return `<svg viewBox="-5 -5 110 110" aria-hidden="true">${glowDefs(id, s.colour)}
+    <circle cx="50" cy="50" r="46" fill="url(#r${id})" opacity=".35"/>
+    <path d="${s.path}" fill="none" stroke="${s.colour}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#f${id})"/>
+    <path d="${s.path}" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>
+    <line x1="58" y1="58" x2="96" y2="104" stroke="#5a3a22" stroke-width="3.5" stroke-linecap="round"/></svg>`;
+}
+const tabIcons = {
+  All: '<path d="M12 2l1.8 5.5H19l-4.4 3.3 1.7 5.4L12 13l-4.3 3.2 1.7-5.4L5 7.5h5.2z"/>',
+  Charms: '<path d="M12 3l7 9-7 9-7-9z M5 12h14"/>',
+  Defence: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+  Creatures: '<circle cx="12" cy="12" r="8"/><path d="M8 10c1-2 7-2 8 0M9 15c2 1.5 4 1.5 6 0"/>',
+  Transfiguration: '<path d="M12 3v18M5 7l14 10M19 7L5 17"/>'
+};
+function renderTabs() {
+  $('#tabs').innerHTML = ['All', ...book.categories].map(c =>
+    `<button role="tab" class="${c === category ? 'active' : ''}" data-cat="${c}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">${tabIcons[c] || tabIcons.All}</svg>${c.toUpperCase()}</button>`).join('');
+  $$('#tabs button').forEach(b => b.onclick = () => { category = b.dataset.cat; renderTabs(); renderBook(); });
+}
+function card(s, locked) {
+  const n = casts[s.key] || 0;
+  return `<button class="card ${locked ? 'locked' : ''}" style="--c:${s.colour}" data-spell="${s.key}" ${locked ? 'disabled aria-label="Locked spell"' : ''}>
+    ${iconSVG(s, locked)}${locked ? '' : `<span>${s.name}</span>`}${n && !locked ? `<span class="count">×${n}</span>` : ''}</button>`;
+}
+function renderBook() {
+  const list = book.spells.filter(s => category === 'All' || s.category === category);
+  $('#spellGrid').innerHTML = list.map(s => card(s, false)).join('');
+  $$('#spellGrid .card').forEach(c => c.onclick = () => openCast(c.dataset.spell));
+}
+function renderCollection() {
+  const learned = book.spells.filter(s => casts[s.key]);
+  $('#collCount').textContent = `${learned.length} / ${book.spells.length}`;
+  $('#collGrid').innerHTML = book.spells.map(s => card(s, !casts[s.key])).join('');
+  $$('#collGrid .card:not(.locked)').forEach(c => c.onclick = () => openCast(c.dataset.spell));
+}
+
+/* ── Casting screen ────────────────────── */
+let traceAnim = 0;
+function drawTrace(s) {
+  const id = ++uid, svg = $('#trace');
+  svg.innerHTML = `${glowDefs(id, s.colour)}
+    <marker id="m${id}" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#fff"/></marker>
+    <path id="tp" d="${s.path}" fill="none" stroke="${s.colour}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#f${id})" marker-end="url(#m${id})"/>
+    <path d="${s.path}" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle id="tstart" r="3.2" fill="#fff"/>
+    <g id="orb"><circle r="16" fill="url(#r${id})"/><circle r="3" fill="#fff"/></g>
+    <line id="stick" stroke="#5a3a22" stroke-width="3.5" stroke-linecap="round"/>`;
+  const p = svg.querySelector('#tp'), len = p.getTotalLength(), start = p.getPointAtLength(0);
+  svg.querySelector('#tstart').setAttribute('cx', start.x); svg.querySelector('#tstart').setAttribute('cy', start.y);
+  cancelAnimationFrame(traceAnim); const t0 = performance.now();
+  const step = t => {
+    const k = ((t - t0) % 2600) / 2200, pt = p.getPointAtLength(Math.min(k, 1) * len);
+    svg.querySelector('#orb').setAttribute('transform', `translate(${pt.x} ${pt.y})`);
+    const st = svg.querySelector('#stick'); st.setAttribute('x1', pt.x + 4); st.setAttribute('y1', pt.y + 4); st.setAttribute('x2', pt.x + 40); st.setAttribute('y2', pt.y + 46);
+    traceAnim = requestAnimationFrame(step);
+  };
+  traceAnim = requestAnimationFrame(step);
+}
+function openCast(key) {
+  current = byKey[key];
+  $('#castTitle').textContent = current.name;
+  $('#castLead').textContent = challenge ? 'Cast the spell before the timer runs out!' : `Trace the wand movement shown below to cast ${current.name}.`;
+  $('#castCount').textContent = `Spell Casts: ${casts[key] || 0}`;
+  $('#meter').style.setProperty('--v', `${Math.min(90, 10 + current.level * 16)}%`);
+  $('#castHint').textContent = (wandState.connected ? 'Your wand is listening. Start at the dot and follow the arrows.' : 'No wand connected: use the button below, or connect under Settings.')
+    + (current.unconfirmedShape ? ' This shape is a guess; the wand may expect something different.' : '');
+  $('#timer').hidden = !challenge;
+  $('#castLive').innerHTML = '';
+  const img = $('#gestureImg');
+  img.hidden = !current.gesture; $('#trace').style.display = current.gesture ? 'none' : '';
+  if (current.gesture) { img.src = current.gesture; img.style.setProperty('--c', current.colour); cancelAnimationFrame(traceAnim); }
+  else drawTrace(current);
+  go('cast');
+}
+
+/* ── Results ───────────────────────────── */
+function chime() {
+  if (!settings.sound) return;
+  try { const ac = new (window.AudioContext || window.webkitAudioContext)();
+    [660, 880, 1320].forEach((f, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0, ac.currentTime + i * .09); g.gain.linearRampToValueAtTime(.12, ac.currentTime + i * .09 + .02); g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + i * .09 + .9);
+      o.connect(g).connect(ac.destination); o.start(ac.currentTime + i * .09); o.stop(ac.currentTime + i * .09 + 1); }); } catch {}
+}
+function showSuccess(s, ev) {
+  casts[s.key] = (casts[s.key] || 0) + 1; store.set('casts', casts);
+  const id = ++uid;
+  $('#burst').innerHTML = `${glowDefs(id, s.colour)}<circle cx="100" cy="100" r="95" fill="url(#r${id})"/>` +
+    Array.from({ length: 28 }, (_, i) => { const a = i / 28 * Math.PI * 2, r1 = 18, r2 = 60 + (i % 3) * 18;
+      return `<line x1="${100 + Math.cos(a) * r1}" y1="${100 + Math.sin(a) * r1}" x2="${100 + Math.cos(a) * r2}" y2="${100 + Math.sin(a) * r2}" stroke="${s.colour}" stroke-width="1.4" opacity=".8"/>`; }).join('') +
+    `<circle cx="100" cy="100" r="10" fill="#fff" filter="url(#f${id})"/>`;
+  $('#successTitle').textContent = s.name;
+  $('#successHead').textContent = challenge ? `Great Casting! ${challenge.score + 1} / ${challenge.total}` : 'Great Casting!';
+  const acts = (ev && ev.actions) || [];
+  const how = ev && ev.source === 'openwand' ? 'Recognised by Open Wand' : ev && ev.source === 'wand' ? "Recognised by the wand's own guess" : '';
+  $('#actionsLog').textContent = [how, ...acts.map(a => (a.ok ? '✓ ' : '✗ ') + a.action)].filter(Boolean).join(' · ');
+  chime(); go('success');
+}
+$('#againBtn').onclick = () => challenge ? nextChallenge() : current && openCast(current.key);
+
+function onSpell(ev) {
+  const s = byKey[ev.key] || { key: ev.key, name: ev.name, colour: ev.colour, path: 'M50 50 m-20 0 a20 20 0 1 0 40 0 a20 20 0 1 0 -40 0', level: 1 };
+  if (challenge) {
+    if (current && ev.key === current.key) { challenge.score++; showSuccess(s, ev); setTimeout(nextChallenge, 1800); }
+    else toast(`You cast ${ev.name}, not ${current.name}`);
+    return;
+  }
+  if (ev.source === 'wand' && current && $('#cast').classList.contains('active') && ev.key !== current.key) toast(`You cast ${ev.name}`);
+  current = s; showSuccess(s, ev);
+}
+$('#practiseBtn').onclick = async () => {
+  if (!current) return;
+  try { await api('/api/cast/' + current.key, 'POST'); } catch (e) { toast(e.message); }  // the engine reports the spell back
+};
+
+/* ── Challenges ────────────────────────── */
+$('#startChallenge').onclick = () => { challenge = { score: 0, round: 0, total: 5, timer: 0 }; nextChallenge(); };
+function nextChallenge() {
+  if (!challenge) return;
+  clearInterval(challenge.timer);
+  if (challenge.round >= challenge.total) {
+    const sc = challenge.score; store.set('best', Math.max(sc, store.get('best', 0))); challenge = null;
+    toast(`Challenge over: ${sc} / 5`); go('challenge-start'); return;
+  }
+  challenge.round++;
+  const pool = book.spells.filter(s => s.level <= 3), s = pool[Math.floor(Math.random() * pool.length)];
+  openCast(s.key);
+  let left = 15; $('#timerText').textContent = `0:${String(left).padStart(2, '0')}`;
+  challenge.timer = setInterval(() => { left--; $('#timerText').textContent = `0:${String(Math.max(left, 0)).padStart(2, '0')}`;
+    if (left <= 0) { toast('Out of time!'); nextChallenge(); } }, 1000);
+}
+function stopChallenge() { if (challenge) { clearInterval(challenge.timer); challenge = null; } }
+
+/* ── Live trail & training ─────────────── */
+function drawLive(svg, pts) {
+  if (!pts || pts.length < 2) { svg.innerHTML = ''; return; }
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const size = Math.max(maxX - minX, maxY - minY, 15), k = 84 / size;
+  const ox = 50 - (minX + maxX) / 2 * k, oy = 50 + (minY + maxY) / 2 * k;
+  const xy = pts.map(([x, y]) => [ox + x * k, oy - y * k]);  // degrees up -> screen up
+  const [ex, ey] = xy[xy.length - 1], [sx, sy] = xy[0];
+  svg.innerHTML = `<polyline points="${xy.map(p => p.map(v => v.toFixed(1)).join(',')).join(' ')}"/><circle cx="${sx}" cy="${sy}" r="2.2" opacity=".6"/><circle cx="${ex}" cy="${ey}" r="3"/>`;
+}
+let training = { key: null, trained: {} };
+async function renderTrain() {
+  try {
+    const t = await api('/api/training'); training.trained = t.trained;
+    $('#calibStatus').textContent = t.tipAxis ? 'Calibrated ✓' : 'Not calibrated yet';
+  } catch (e) { $('#calibStatus').textContent = e.message; }
+  $('#trainGrid').innerHTML = book.spells.filter(s => s.gesture).map(s => {
+    const n = training.trained[s.key] || 0;
+    return `<button class="card" style="--c:${s.colour}" data-train="${s.key}">${n ? `<span class="badge">${n}</span>` : ''}<img src="${s.gesture}" alt="" loading="lazy"><span>${s.name}</span></button>`;
+  }).join('');
+  $$('#trainGrid .card').forEach(c => c.onclick = () => openTrain(c.dataset.train));
+}
+async function openTrain(key) {
+  const s = byKey[key];
+  try { const r = await api('/api/train/' + key, 'POST'); training.key = key; $('#trainCount').textContent = `Recorded: ${r.count}`; }
+  catch (e) { toast(e.message); return; }
+  $('#trainTitle').textContent = 'Train ' + s.name; $('#trainImg').src = s.gesture; $('#trainLive').innerHTML = '';
+  $('#trainHint').textContent = wandState.connected ? 'Waiting for your first cast…' : 'Connect your wand first (Settings → Wand connection).';
+  go('trainSpell');
+}
+$('#trainClear').onclick = () => training.key && api('/api/train/' + training.key, 'DELETE').then(() => { $('#trainCount').textContent = 'Recorded: 0'; $('#trainLive').innerHTML = ''; toast('Recordings cleared'); }).catch(e => toast(e.message));
+$('#calibrateBtn').onclick = async () => {
+  $('#calibStatus').textContent = 'Hold still… measuring';
+  try { await api('/api/calibrate', 'POST'); $('#calibStatus').textContent = 'Calibrated ✓'; } catch (e) { $('#calibStatus').textContent = e.message; }
+};
+function onWandMotion(ev) {
+  const active = document.querySelector('.screen.active')?.id;
+  if (ev.type === 'trail') {
+    if (active === 'cast') drawLive($('#castLive'), ev.points);
+    if (active === 'trainSpell') drawLive($('#trainLive'), ev.points);
+  } else if (ev.type === 'trained') {
+    training.trained[ev.key] = ev.count;
+    if (active === 'trainSpell') { drawLive($('#trainLive'), ev.path); $('#trainCount').textContent = `Recorded: ${ev.count}`;
+      $('#trainHint').textContent = ev.count >= 3 ? 'Great! Add a few more for better accuracy, or tap Done.' : `Got it. Cast it ${3 - ev.count} more time${ev.count === 2 ? '' : 's'}.`; }
+  } else if (ev.type === 'miss') {
+    if (active === 'cast') drawLive($('#castLive'), ev.path);
+    toast(ev.closest ? `Not recognised (closest: ${ev.closest})` : 'Not recognised');
+  }
+}
+
+/* ── Houses ────────────────────────────── */
+const houses = [
+  { n: 'Gryffindor', a: '#a3202a', b: '#e0a63a', g: 'M50 30 C38 34 34 46 40 58 C34 60 34 70 42 72 L46 66 L54 66 L58 72 C66 70 66 60 60 58 C66 46 62 34 50 30Z' },
+  { n: 'Hufflepuff', a: '#e3b23c', b: '#2b2118', g: 'M30 60 C34 40 66 40 70 60 C66 66 58 68 50 68 C42 68 34 66 30 60Z M40 46 L36 38 M60 46 L64 38' },
+  { n: 'Ravenclaw', a: '#1f3f8f', b: '#b8bfd0', g: 'M50 32 L56 46 L74 44 L60 56 L66 72 L50 62 L34 72 L40 56 L26 44 L44 46Z' },
+  { n: 'Slytherin', a: '#1c6b3a', b: '#c8ccd2', g: 'M62 34 C40 30 34 46 50 50 C66 54 62 72 38 68' }
+];
+function crest(h) {
+  return `<svg viewBox="0 0 100 116"><path d="M50 4 L94 16 C94 66 76 96 50 112 C24 96 6 66 6 16Z" fill="${h.a}" stroke="${h.b}" stroke-width="4"/>
+    <path d="M50 12 L86 22 C86 64 70 88 50 102 C30 88 14 64 14 22Z" fill="none" stroke="${h.b}" stroke-opacity=".5" stroke-width="1.5"/>
+    <path d="${h.g}" fill="none" stroke="${h.b}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function renderHouses() {
+  $('#houses').innerHTML = houses.map(h => `<button class="house ${house === h.n ? 'chosen' : ''}" data-h="${h.n}">${crest(h)}${h.n}</button>`).join('');
+  $$('#houses .house').forEach(b => b.onclick = () => { house = b.dataset.h; store.set('house', house); renderHouses(); toast(`Welcome to ${house}!`); setTimeout(() => go('home'), 700); });
+}
+
+/* ── Settings ──────────────────────────── */
+function renderSettings() {
+  $('#soundToggle').classList.toggle('on', settings.sound); $('#vibeToggle').classList.toggle('on', settings.vibe);
+  $('#houseVal').textContent = house || 'None';
+  $('#connVal').textContent = wandState.connected ? wandState.device : 'Not connected';
+  const nTrained = Object.keys(training.trained || {}).length;
+  $('#trainVal').textContent = nTrained ? `${nTrained} trained` : '';
+}
+$('#soundRow').onclick = () => { settings.sound = !settings.sound; store.set('settings', settings); renderSettings(); };
+$('#vibeRow').onclick = () => { settings.vibe = !settings.vibe; store.set('settings', settings); renderSettings(); };
+
+/* ── Wand engine (runs in this page) ───── */
+async function api(path, method = 'GET', body) {
+  if (!engine) throw Error('Still loading…');
+  return engine.request(path, method, body);
+}
+function setWandState(s) {
+  wandState = s;
+  const label = s.connected ? `${s.device} connected${s.battery != null ? ` · ${s.battery}% battery` : ''}`
+    : s.reconnecting ? 'Reconnecting… flick the wand to wake it'
+    : engine && !engine.supported ? 'Open this page in the Bluefy app to connect'
+    : 'Wand not connected: Settings → Wand connection';
+  $('#bridgeStatus').textContent = s.connected ? 'Wand connected' : s.reconnecting ? 'Reconnecting… flick the wand to wake it' : 'Not connected';
+  $('#homeStatus').textContent = label; $('#homeDot').classList.toggle('on', !!s.connected);
+  $('#wandInfo').textContent = s.connected ? `${s.device}\nFirmware ${s.firmware || '?'} · Battery ${s.battery ?? '?'}%` : 'No wand connected';
+  if (s.buttons) paintPads(s.buttons);
+  renderSettings();
+}
+function paintPads(p) { $$('#padView i').forEach((el, i) => el.classList.toggle('on', !!p[i])); }
+function onEngineMessage(ev) {
+  if (ev.type === 'status') setWandState(ev.state);
+  else if (ev.type === 'spell') onSpell(ev);
+  else if (ev.type === 'buttons') paintPads(ev.pressed);
+  else onWandMotion(ev);
+}
+async function refreshSmartHome() {
+  const s = await api('/api/status'); setWandState(s);
+  const entries = Object.entries(s.smartHome || {});
+  $('#shList').innerHTML = entries.length ? entries.map(([k, a]) => `<div><b style="color:var(--gold)">${(byKey[k] || { name: k }).name}</b>: ${a.map(x => x.replace(/</g, '&lt;')).join(', ')}</div>`).join('') : 'No spell actions configured yet.';
+  const cfg = await api('/api/smarthome');
+  $('#shEdit').value = JSON.stringify(Object.keys(cfg).length ? cfg : SMART_EXAMPLE, null, 2);
+}
+const SMART_EXAMPLE = {
+  home_assistant: { url: 'https://your-home.ui.nabu.casa', token: 'paste a long-lived access token' },
+  spells: { lumos: [{ type: 'home_assistant', service: 'light.turn_on', data: { entity_id: 'light.living_room' } }],
+            nox: [{ type: 'home_assistant', service: 'light.turn_off', data: { entity_id: 'light.living_room' } }] },
+};
+$('#scanBtn').onclick = async () => {
+  $('#bridgeStatus').textContent = 'Choose your MCW wand in the list…';
+  try { await engine.choose(); }
+  catch (e) { $('#bridgeStatus').textContent = e.name === 'NotFoundError' ? 'No wand chosen. Flick it awake and try again.' : 'Could not connect: ' + e.message; }
+};
+$('#disconnectBtn').onclick = async () => { try { setWandState(await api('/api/disconnect', 'POST')); } catch (e) { toast(e.message); } };
+['#ffffff', '#7cc4ff', '#42aaff', '#b05cff', '#ff3b4e', '#ff7a1f', '#f6c75c', '#54d36a', '#44dfcb'].forEach(c => {
+  const b = document.createElement('button'); b.style.setProperty('--c', c); b.setAttribute('aria-label', 'Light ' + c);
+  b.onclick = () => api('/api/lights', 'POST', { colour: c }).catch(e => toast(e.message)); $('#swatches').append(b); });
+$('#lightsOff').onclick = () => api('/api/lights/off', 'POST').catch(e => toast(e.message));
+$('#buzzBtn').onclick = () => settings.vibe ? api('/api/buzz', 'POST', { ms: 400 }).catch(e => toast(e.message)) : toast('Vibration is off in Settings');
+$('#shReload').onclick = async () => {
+  let cfg; try { cfg = JSON.parse($('#shEdit').value); } catch (e) { toast('That isn\'t valid JSON: ' + e.message); return; }
+  await api('/api/smarthome', 'POST', cfg); await refreshSmartHome(); toast('Smart home settings saved');
+};
+
+/* ── Boot ──────────────────────────────── */
+fetch('spells.json').then(r => r.json()).then(d => {
+  book = d; byKey = Object.fromEntries(d.spells.map(s => [s.key, s]));
+  engine = new Engine(byKey); engine.on(onEngineMessage);
+  training.trained = engine.matcher.trained;
+  renderTabs(); renderBook(); renderHouses(); renderSettings();
+  if (!house) go('house');
+  refreshSmartHome();
+  engine.resume().catch(() => {});
+});
+</script>
+</body>
+</html>
